@@ -47,9 +47,10 @@ async def analyze(request):
 
     # convert from image bytes to images to tensors
     img_bytes = [b64decode(inst['image_bytes']['b64']) for inst in instances]
-    tensors = [image2tensor(Image.open(BytesIO(byts)), dtype=np.float32).div_(255) for byts in img_bytes]
-    tfm_tensors = [learner.data.valid_dl.tfms[0]((tensor, torch.zeros(0)))[0] for tensor in tensors]
+    images = [Image.open(BytesIO(byts)) for byts in img_bytes]
+    tensors = [image2tensor(image).div_(255) for image in images]
 
+    tfm_tensors = [learner.data.valid_dl.tfms[0]((tensor, torch.zeros(0)))[0] for tensor in tensors]
     # batch predict, dummy labels for the second argument
     dummy_labels = torch.zeros(len(tfm_tensors))
     tensor_stack = torch.stack(tfm_tensors)
