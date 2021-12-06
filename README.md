@@ -19,7 +19,7 @@ If you require additional utils files for loading the model with [`load_learner`
 ## Run
 
 ```
-docker run --rm -p 8501:8501 -t org/image:tag .
+docker run --rm -p 8501:8501 -t fastserve .
 ```
 
 ## Use
@@ -32,14 +32,7 @@ Accepts a JSON request in the form:
 
 ```js
 {
-  "instances": [
-    {
-      "image_bytes": {
-        "b64": "[b64_string]"
-      }
-    }
-  ],
-  ...
+      "image_bytes": "[b64_string]"
 }
 ```
 
@@ -49,11 +42,20 @@ where each `b64_string` is a base-64 encoded string representing the model input
 
 Returns an HTTP Status of `200` as long as the API is running (health check).
 
+## Example request
+Place an image `test_image.png` in the `tests` folder and run the script `tests/test_request.py`. Example output from the script:
+
+```
+python3 test_request.py
+Server is running
+200
+{'prediction': 'my_result'}
+```
+
 ### Limitations, Motivation, and Future Directions
 
-- This was written so fastai models could be used with [chip-n-scale](https://github.com/developmentseed/chip-n-scale-queue-arranger), an orchestration pipeline for running machine learning inference at scale. It has only been tested in that context.
+- This was written so fastai models could be used with [chip-n-scale](https://github.com/developmentseed/chip-n-scale-queue-arranger), an orchestration pipeline for running machine learning inference at scale. It has only been tested in that context. MIGHT BE BROKEN BY MY CHANGES TO THE BODY STRUCTURE
 - It has only been tested with a few CNN models.
-- It only uses the [first transform from the validation data loader](https://github.com/developmentseed/fastai-serving/blob/master/src/server.py#L50) to transform input data.
 - **Comparison to TensorFlow Serving**: This repo currently only implements a single replica of a TensorFlow serving endpoint and doesn't have any of the additional features that it supports (multiple models, gRPC support, batching scheduler, etc.). We're happy to accept pull requests which increase the functionality in this regard.
 - **Pytorch JIT**: A [popular guide to deploying PyTorch models](https://medium.com/datadriveninvestor/deploy-your-pytorch-model-to-production-f69460192217#1bc6) (of which fastai models are a subset), shows how to create a `traced_script_module` for faster inference. Future iterations of this repo may explore these methods to improve inference times.
 
