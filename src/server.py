@@ -7,7 +7,8 @@ import aiohttp
 import asyncio
 import uvicorn
 import torch
-from fastai.vision import pil2tensor, load_learner
+# from fastai.vision.core import image2tensor, load_learner
+from fastai.vision.all import *
 from starlette.applications import Starlette
 from starlette.middleware.cors import CORSMiddleware
 from starlette.responses import JSONResponse
@@ -31,7 +32,7 @@ app = Starlette()
 app.add_middleware(CORSMiddleware, allow_origins=['*'], allow_headers=['X-Requested-With', 'Content-Type'])
 
 async def setup_learner():
-    learner = load_learner('model')
+    learner = load_learner('model/export.pkl')
     return learner
 
 loop = asyncio.get_event_loop()
@@ -46,7 +47,7 @@ async def analyze(request):
 
     # convert from image bytes to images to tensors
     img_bytes = [b64decode(inst['image_bytes']['b64']) for inst in instances]
-    tensors = [pil2tensor(Image.open(BytesIO(byts)), dtype=np.float32).div_(255) for byts in img_bytes]
+    tensors = [image2tensor(Image.open(BytesIO(byts)), dtype=np.float32).div_(255) for byts in img_bytes]
     tfm_tensors = [learner.data.valid_dl.tfms[0]((tensor, torch.zeros(0)))[0] for tensor in tensors]
 
     # batch predict, dummy labels for the second argument

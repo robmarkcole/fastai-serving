@@ -7,13 +7,13 @@ A Docker image for serving [fastai](https://www.fast.ai/) models, mimicking the 
 First, export a fastai `Learner` with [`.export`](https://docs.fast.ai/basic_train.html#Learner.export). Assuming that this file is in `model_dir`, you can build the serving image like so:
 
 ```
-# docker build -f Dockerfile.[cpu/gpu] --build-arg MODEL_DIR=./model_dir -t <org>/<image>:<tag> .`
+# docker build -f Dockerfile.[cpu/gpu] --build-arg MODEL_DIR=./model_dir -t fastserve .`
 ```
 
 If you require additional utils files for loading the model with [`load_learner`](https://docs.fast.ai/basic_train.html#load_learner), you can mount an additional directory at build time with:
 
 ```
-# docker build -f Dockerfile.[cpu/gpu] --build-arg MODEL_DIR=./model_dir --build-arg UTILS_DIR=./utils -t org/image:tag .`
+# docker build -f Dockerfile.[cpu/gpu] --build-arg MODEL_DIR=./model_dir --build-arg UTILS_DIR=./utils -t fastserve .`
 ```
 
 ## Run
