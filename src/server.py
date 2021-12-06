@@ -7,7 +7,6 @@ import aiohttp
 import asyncio
 import uvicorn
 import torch
-# from fastai.vision.core import image2tensor, load_learner
 from fastai.vision.all import *
 from starlette.applications import Starlette
 from starlette.middleware.cors import CORSMiddleware
